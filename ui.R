@@ -1,17 +1,3 @@
-
-# This is the user-interface definition of a Shiny web application.
-# You can find out more about building applications with Shiny here:
-#
-# http://shiny.rstudio.com
-#
-# This interface has been modified to be used specifically on Sage Bionetworks Synapse pages
-# to log into Synapse as the currently logged in user from the web portal using the session token.
-#
-# https://www.synapse.org
-
-library(shiny)
-library(waiter)
-
 shinyUI(fluidPage(
 
   tags$head(
@@ -24,18 +10,40 @@ shinyUI(fluidPage(
   uiOutput("title"),
 
   # Sidebar with a slider input for number of bins
-  sidebarLayout(
-    sidebarPanel(
-      sliderInput("bins",
-                  "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
+  titlePanel("Build MAGeCK configuration file"),
+  
+  fluidRow(
+    h3("1. Select the treatment count files"),
+    column(width = 11, offset = 1,
+           dataTableOutput('treatment_table'),
+           verbatimTextOutput('selected_treatment')
     ),
-
-    # Show a plot of the generated distribution
-    mainPanel(
-      plotOutput("distPlot")
+    
+  ),
+  fluidRow(
+    h3("2. Select the control count files"),
+    column(width = 11, offset = 1,
+           dataTableOutput('control_table'),
+           verbatimTextOutput('selected_control')
+    ),
+  ),
+  fluidRow(
+    h3("3. Select the reference library"),
+    column(width = 11, offset = 1,
+           selectInput('selected_library', "Library Name",choices = c())
+    )
+  ),
+  fluidRow(
+    h3("4. Enter the comparison name"),
+    column(width = 11, offset = 1,
+           textInput('comparison_name',"Comparison Name")
+    )
+  ),
+  fluidRow(
+    h3("5. Download the yaml file"),
+    column(width = 11, offset = 1,
+           verbatimTextOutput('config_file'),
+           downloadButton('downloadFile')
     )
   ),
   use_waiter(),
