@@ -57,17 +57,11 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-  
-  # table for count file metadata
-  count_file_meta_data <- reactive({
-    tbl <- synTableQuery("SELECT * FROM syn21763191",
-                         includeRowIdAndRowVersion=FALSE)
-    as.data.frame(tbl)
-  })
+  source("get_synapse_data.R")
   
   # treatment data table
   treatment_table_data <- reactive({
-    tbl <- count_file_meta_data()
+    tbl <- count_file_meta_data
     filtered_tbl <- tbl %>%
       filter(MAGeCKInputType=="treatments")
   })
@@ -89,7 +83,7 @@ shinyServer(function(input, output, session) {
   
   # control data table
   control_table_data <- reactive({
-    tbl <- count_file_meta_data()
+    tbl <- count_file_meta_data
     filtered_tbl <- tbl %>%
       filter(MAGeCKInputType=="control")
   })
@@ -128,27 +122,17 @@ shinyServer(function(input, output, session) {
     if (is.null(x))
       x <- character(0)
     
-    library_list <- as.data.frame(synTableQuery("SELECT distinct LibraryName FROM syn21763191",
-                                  includeRowIdAndRowVersion=FALSE))
     # Can also set the label and select items
     updateSelectInput(session, "selected_library",
-                      choices = library_list$LibraryName,
+                      choices = library_list,
                       selected = tail(x, 1)
     )
-  })
-  
-  # table for comparison name
-  comparison_name_data <- reactive({
-    tbl <- synTableQuery("SELECT name FROM syn25435509",
-                         includeRowIdAndRowVersion=FALSE)
-    tbl <- as.data.frame(tbl)
-    tbl$name
   })
   
   # check whether the comparison name is unique
   observeEvent(input$unique, {
     comparison_name <- input$comparison_name
-    if(comparison_name %in% comparison_name_data()){
+    if(comparison_name %in% comparison_name_data$name){
       output_text <- "Sorry! Please use another comparison name."
     }else{
       output_text <- "This comparisonn name is unique!"
