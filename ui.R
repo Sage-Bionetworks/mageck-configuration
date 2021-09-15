@@ -35,8 +35,12 @@ shinyUI(fluidPage(
   ),
   fluidRow(
     h3("4. Enter the comparison name"),
+    h5("Please give a meaningful comparison name and check whether it is unique.
+       For example, 20201230_Dragonite_Lat_CUL3"),
     column(width = 11, offset = 1,
-           textInput('comparison_name',"Comparison Name")
+           textInput('comparison_name',"Comparison Name"),
+           actionButton("unique", "Check Uniqueness"),
+           verbatimTextOutput('unique_name')
     )
   ),
   fluidRow(

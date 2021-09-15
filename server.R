@@ -137,6 +137,25 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  # table for comparison name
+  comparison_name_data <- reactive({
+    tbl <- synTableQuery("SELECT name FROM syn25435509",
+                         includeRowIdAndRowVersion=FALSE)
+    tbl <- as.data.frame(tbl)
+    tbl$name
+  })
+  
+  # check whether the comparison name is unique
+  observeEvent(input$unique, {
+    comparison_name <- input$comparison_name
+    if(comparison_name %in% comparison_name_data()){
+      output_text <- "Sorry! Please use another comparison name."
+    }else{
+      output_text <- "This comparisonn name is unique!"
+    }
+    output$unique_name <- renderText({output_text})
+  })
+  
   # yaml file 
   output$config_file <- renderPrint({
     cat("library_fileview: syn22344156\n")
