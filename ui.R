@@ -1,3 +1,5 @@
+library(waiter)
+
 shinyUI(fluidPage(
 
   tags$head(
